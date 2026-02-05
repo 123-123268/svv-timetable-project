@@ -7,14 +7,14 @@ const TableFile = () => {
   const filename = location.state?.filename;
   const authorname = location.state?.authorname;
 
-  const curr = "trent"; // current user
+  const curr = "John Doe"; // current user
 
   const data = [
     { row: 0, col: 0, value: "cse", accessuser: "John Doe" },
     { row: 0, col: 1, value: "maths", accessuser: "doe" },
     { row: 0, col: 2, value: "science", accessuser: "trent" },
     { row: 1, col: 0, value: "data structures", accessuser: "bob" },
-    { row: 1, col: 1, value: "algebra", accessuser: "charlie" },
+    // { row: 1, col: 1, value: "algebra", accessuser: "charlie" },
     { row: 2, col: 0, value: "algorithms", accessuser: "mallory" },
     { row: 2, col: 1, value: "calculus", accessuser: "trent" },
     { row: 2, col: 2, value: "chemistry", accessuser: "peggy" },

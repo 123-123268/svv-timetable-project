@@ -1,6 +1,7 @@
 import React from 'react'
 import TableBoxComponenet from './TableBoxComponenet';
 import Footer from './Footer';
+import Navbar from './Navbar';
 
 const Home = () => {
   const list = [
@@ -19,6 +20,8 @@ const Home = () => {
   ];
 
   return (
+    <div>
+      <Navbar />
     <div className="min-h-screen bg-gray-100 flex flex-col">
       <div className="max-w-3xl w-full mx-auto px-4 py-8 flex-1">
         <h1 className="text-2xl font-bold mb-6 text-gray-800">
@@ -37,6 +40,7 @@ const Home = () => {
       </div>
 
       <Footer />
+    </div>
     </div>
   );
 }
