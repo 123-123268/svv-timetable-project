@@ -1,29 +1,32 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext"; // adjust path
 
 const Signup = () => {
-  const navigate = useNavigate(); // ✅ correct hook usage
+  const navigate = useNavigate();
+  const { signup } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const submitForm = async () => {
+  const submitForm = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!email || !password) {
+      return setError("Email and password are required");
+    }
+
     try {
-      const url = "http://localhost:3000/users/signup";
-      const response = await axios.post(url, { email, password });
-
-      console.log("Signup successful:", response.data);
-      navigate("/home"); // ✅ correct navigation
-    } catch (error) {
-      console.error("Signup error:", error);
-
-      // Better error message
-      if (error.response) {
-        alert(error.response.data.message || "Signup failed");
-      } else {
-        alert("Server not reachable");
-      }
+      setLoading(true);
+      await signup(email, password); // 🔥 global signup
+      navigate("/home");
+    } catch (err) {
+      setError(err.message || "Signup failed");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -35,7 +38,10 @@ const Signup = () => {
           Nice to meet you! Enter your details to register.
         </p>
 
-        <div className="mt-8 w-80 sm:w-96 space-y-6">
+        <form
+          onSubmit={submitForm}
+          className="mt-8 w-80 sm:w-96 space-y-6"
+        >
           <div>
             <label className="block mb-2 text-sm text-slate-600">Email</label>
             <input
@@ -58,13 +64,18 @@ const Signup = () => {
             />
           </div>
 
+          {error && (
+            <p className="text-sm text-red-600 text-center">{error}</p>
+          )}
+
           <button
-            className="w-full bg-slate-800 text-white py-2 rounded-md hover:bg-slate-700"
-            onClick={submitForm}
+            type="submit"
+            disabled={loading}
+            className="w-full bg-slate-800 text-white py-2 rounded-md hover:bg-slate-700 disabled:opacity-50"
           >
-            Sign Up
+            {loading ? "Signing up..." : "Sign Up"}
           </button>
-        </div>
+        </form>
       </div>
     </div>
   );
