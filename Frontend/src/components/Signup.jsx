@@ -21,7 +21,7 @@ const Signup = () => {
 
     try {
       setLoading(true);
-      await signup(email, password); // 🔥 global signup
+      await signup(email, password);
       navigate("/home");
     } catch (err) {
       setError(err.message || "Signup failed");

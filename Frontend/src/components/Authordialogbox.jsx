@@ -6,10 +6,10 @@ const Authordialogbox = ({
   onSaveValue,
   onSaveAccess,
 }) => {
-  const [value, setValue] = React.useState("");
-  const [access, setAccess] = React.useState("");
+  const [value, setValue] = useState("");
+  const [access, setAccess] =useState("");
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (cell) {
       setValue(cell.value || "");
       setAccess(cell.access || "");
