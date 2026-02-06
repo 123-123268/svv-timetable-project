@@ -1,10 +1,13 @@
 import { useState, useRef, useEffect } from "react";
+import { useAuth } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Navbar = () => {
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const { user, logout } = useAuth(); // ✅ get user
+  const navigate = useNavigate();
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -15,12 +18,16 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleLogout = () => {
+    logout();
+    navigate("/login");
+  };
+  console.log("Navbar user:", user);
+
   return (
     <nav className="w-full h-14 px-6 flex items-center justify-between border-b bg-white">
-      {/* Left */}
       <h1 className="text-lg font-semibold">Time Table Manager</h1>
 
-      {/* Right */}
       <div className="relative" ref={dropdownRef}>
         <button
           onClick={() => setOpen(!open)}
@@ -33,14 +40,15 @@ const Navbar = () => {
           />
         </button>
 
-        {/* Dropdown */}
-        {open && (
-          <div className="absolute right-0 mt-2 w-48 bg-white border rounded-md shadow-lg">
+        {open && user && (
+          <div className="absolute right-0 mt-2 w-52 bg-white border rounded-md shadow-lg">
             <div className="px-4 py-3 text-sm text-gray-700 border-b">
-              user@email.com
+              {user?.email || "Loading..."}
+
             </div>
+
             <button
-              onClick={() => alert("Logging out...")}
+              onClick={handleLogout}
               className="w-full text-left px-4 py-2 text-sm hover:bg-gray-100"
             >
               Logout
