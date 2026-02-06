@@ -12,15 +12,20 @@ export const createFile = async (req, res) => {
   try {
     const result = await pool.query(
       "INSERT INTO files (filename, author_email) VALUES ($1, $2) RETURNING file_id, filename, author_email, created_at",
-      [filename, author_email]
+      [filename, author_email],
     );
 
     res.status(201).json({
       message: "File saved",
       file: result.rows[0],
     });
-
   } catch (error) {
+    // if author has duplicate filename
+    if (error.code === "23505") {
+      return res.status(400).json({
+        message: "You already have a file with this name",
+      });
+    }
     console.error("Error saving file metadata:", error);
 
     // Foreign key violation
@@ -35,7 +40,7 @@ export const createFile = async (req, res) => {
 export const getAllFiles = async (req, res) => {
   try {
     const result = await pool.query(
-      "SELECT file_id, filename, author_email, created_at FROM files ORDER BY created_at DESC"
+      "SELECT file_id, filename, author_email, created_at FROM files ORDER BY created_at DESC",
     );
 
     res.status(200).json(result.rows);

@@ -6,6 +6,7 @@ const TableFile = () => {
   const location = useLocation();
   const filename = location.state?.filename;
   const authorname = location.state?.authorname;
+  const file_id = location.state?.file_id;
 
   const curr = "John Doe"; // current user
 

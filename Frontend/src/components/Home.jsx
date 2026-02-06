@@ -3,28 +3,29 @@ import axios from "axios";
 import TableBoxComponenet from "./TableBoxComponenet";
 import Footer from "./Footer";
 import Navbar from "./Navbar";
+import { useAuth } from "../context/AuthContext";
 
 const Home = () => {
-  const [files, setFiles] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const {
+    fetchFiles,
+    files,
+    setFiles,
+    homeloading,
+    sethomeloading,
+    error,
+    setError,
+  } = useAuth();
 
   useEffect(() => {
-    const fetchFiles = async () => {
+    const loadFiles = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:3000/files/getallfiles"
-        );
-        setFiles(res.data);
+        await fetchFiles();
       } catch (err) {
         console.error(err);
-        setError("Failed to load files");
-      } finally {
-        setLoading(false);
       }
     };
 
-    fetchFiles();
+    loadFiles();
   }, []);
 
   return (
@@ -33,22 +34,16 @@ const Home = () => {
 
       <div className="min-h-screen bg-gray-100 flex flex-col">
         <div className="max-w-3xl w-full mx-auto px-4 py-8 flex-1">
-          <h1 className="text-2xl font-bold mb-6 text-gray-800">
-            Time Tables
-          </h1>
+          <h1 className="text-2xl font-bold mb-6 text-gray-800">Time Tables</h1>
 
-          {loading && (
+          {homeloading && (
             <p className="text-center text-gray-500">Loading files...</p>
           )}
 
-          {error && (
-            <p className="text-center text-red-500">{error}</p>
-          )}
+          {error && <p className="text-center text-red-500">{error}</p>}
 
-          {!loading && !error && files.length === 0 && (
-            <p className="text-center text-gray-500">
-              No files uploaded yet
-            </p>
+          {!homeloading && !error && files.length === 0 && (
+            <p className="text-center text-gray-500">No files uploaded yet</p>
           )}
 
           <ul className="space-y-4">

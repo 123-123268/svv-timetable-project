@@ -7,6 +7,10 @@ export const AuthProvider = ({ children }) => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  const [files, setFiles] = useState([]);
+  const [homeloading, sethomeLoading] = useState(true);
+  const [error, setError] = useState("");
+
   // Load user from localStorage on refresh
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -45,14 +49,42 @@ const signup = async (email, password) => {
     localStorage.removeItem("user");
   };
 
+  const fetchFiles = async () => {
+      try {
+        const res = await axios.get(
+          "http://localhost:3000/files/getallfiles"
+        );
+        setFiles(res.data);
+      } catch (err) {
+        console.error(err);
+        setError("Failed to load files");
+      } finally {
+        sethomeLoading(false);
+      }
+  };
+  const createFile=async (filename)=>{
+    try {
+      const author_email=user.email;
+      const res = await axios.post(
+        "http://localhost:3000/files/createfile",
+        {filename,author_email}
+      );
+      fetchFiles();
+      // setFiles((prevFiles) => [res.data.file, ...prevFiles]);
+    } catch (err) {
+      console.error(err);
+      setError("Failed to create file");
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn,signup, login, logout }}>
+    <AuthContext.Provider value={{ user, isLoggedIn,signup, login, logout,fetchFiles,files,homeloading,error,setError,sethomeLoading,setFiles,createFile }}>
       {!loading && children}
     </AuthContext.Provider>
   );
 };
 
-/* 🔥 THIS EXPORT WAS MISSING OR WRONG */
+
 export const useAuth = () => {
   return useContext(AuthContext);
 };
